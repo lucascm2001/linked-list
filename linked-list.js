@@ -1,25 +1,31 @@
 /* eslint-disable max-classes-per-file */
 
-class Node {
+export class Node {
   constructor(value = null, nextNode = null) {
     this.value = value;
     this.nextNode = nextNode;
   }
 }
 
-class LinkedList {
+export class LinkedList {
   constructor(head) {
     this.head = head;
-    this.head.nextNode = null;
+    if (head !== null) {
+      this.head.nextNode = null;
+    }
   }
 
   append(value) {
     const node = new Node(value);
-    let curr = this.head;
-    while (curr.nextNode !== null) {
-      curr = curr.nextNode;
+    if (this.head === null) {
+      this.head = node;
+    } else {
+      let curr = this.head;
+      while (curr.nextNode !== null) {
+        curr = curr.nextNode;
+      }
+      curr.nextNode = node;
     }
-    curr.nextNode = node;
   }
 
   prepend(value) {
@@ -29,6 +35,7 @@ class LinkedList {
   }
 
   size() {
+    if (this.head === null) return 0;
     let curr = this.head;
     let count = 0;
     while (curr !== null) {
@@ -79,10 +86,31 @@ class LinkedList {
   find(value) {
     let curr = this.head;
     while (curr !== null) {
-      if (curr.value === value) {
+      if (typeof curr === 'object') { // for hash-map
+        if (curr.value.key === value) {
+          return curr;
+        }
+      } else if (curr.value === value) {
         return curr;
       }
       curr = curr.nextNode;
+    }
+    return null;
+  }
+
+  index(value) {
+    let curr = this.head;
+    let count = 0;
+    while (curr !== null) {
+      if (typeof curr === 'object') { // for hash-map
+        if (curr.value.key === value) {
+          return count;
+        }
+      } else if (curr.value === value) {
+        return count;
+      }
+      curr = curr.nextNode;
+      count += 1;
     }
     return null;
   }
@@ -115,22 +143,13 @@ class LinkedList {
       const afterHead = this.head.nextNode;
       this.head.nextNode = null;
       this.head = afterHead;
+    } else if (index === this.size() - 1) {
+      this.pop();
+    } else {
+      const nodeBeforeRemove = this.at(index - 1);
+      const nodeAfterRemove = this.at(index + 1);
+      nodeBeforeRemove.nextNode = nodeAfterRemove;
+      this.at(index).nextNode = null;
     }
-    const nodeBeforeRemove = this.at(index - 1);
-    const nodeAfterRemove = this.at(index + 1);
-    nodeBeforeRemove.nextNode = nodeAfterRemove;
-    this.at(index).nextNode = null;
   }
 }
-const node1 = new Node(5);
-
-const ll = new LinkedList(node1);
-ll.prepend(10);
-ll.append(20);
-ll.pop();
-ll.append(55);
-ll.size();
-ll.insertAt(2, 1);
-ll.removeAt(2);
-console.log(ll.toString());
-console.log(ll.size());
