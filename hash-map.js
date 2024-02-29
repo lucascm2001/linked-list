@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 // eslint-disable-next-line import/extensions
 import { LinkedList } from './linked-list.js';
 
